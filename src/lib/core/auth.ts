@@ -1,13 +1,12 @@
 // Imports
 
-import NextAuth from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { DatabaseClient } from "./database";
 import { connectToDatabase, closeDatabaseConnection } from "./database";
 
-// Exports 
-
-export const { handlers, signIn, signOut, auth } = NextAuth({
+// Configuration object
+const authOptions = {
     secret: process.env.NEXTAUTH_SECRET,
     providers: [
         Credentials({
@@ -33,7 +32,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     dbClient = connectionResult.data;
 
                     const userResult = await dbClient.query(
-                        `SELECT id, name, email, password, team_id FROM users WHERE email = $1`,
+                        `SELECT id, name, email, password FROM users WHERE email = $1`,
                         [credentials.email]
                     );
 
@@ -69,13 +68,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }),
     ],
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user }: { token: any, user: any }) {
             if (user) {
                 token.id = user.id;
             }
             return token;
         },
-        async session({ session, token }) {
+        async session({ session, token }: { session: any, token: any }) {
             if (session.user) {
                 session.user.id = token.id as string;
             }
@@ -88,4 +87,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     session: {
         strategy: "jwt",
     },
-});
+};
+
+// Initialize and export
+const nextAuth = NextAuth(authOptions as AuthOptions);
+
+// Check what we got
+console.log("NextAuth result type:", typeof nextAuth);
+console.log("NextAuth result:", nextAuth);
+
+// Export - handle both function and object cases
+export const handlers = typeof nextAuth === 'function' 
+    ? { GET: nextAuth, POST: nextAuth }
+    : nextAuth.handlers;
+
+export const signIn = typeof nextAuth === 'function' ? undefined : nextAuth.signIn;
+export const signOut = typeof nextAuth === 'function' ? undefined : nextAuth.signOut;
+export const auth = typeof nextAuth === 'function' ? undefined : nextAuth.auth;

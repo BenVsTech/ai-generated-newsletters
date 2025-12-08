@@ -18,8 +18,8 @@ export default function Home() {
   const [content, setContent] = useState<React.ReactNode>(null);
   const [section, setSection] = useState<Section>({
     settings: false,
-    tickets: false,
-    teams: false,
+    configurations: false,
+    generation: false,
     admin: false,
   });
   const [selectedSection, setSelectedSection] = useState<string>("");
@@ -138,36 +138,36 @@ export default function Home() {
         </li>
         <li className={`${styles["clickable"]} ${styles["width-100"]} ${styles["text-center"]}`}>
           <b
-            onClick={() => setSection({ ...section, tickets: !section.tickets })}
-          >Tickets</b>
-          {section.tickets && (
+            onClick={() => setSection({ ...section, configurations: !section.configurations })}
+          >Configurations</b>
+          {section.configurations && (
             <ul className={`${styles["column-container"]} ${styles["width-100"]} ${styles["content-start"]} ${styles["align-center"]} ${styles["gap-20"]} ${styles["max-width-150"]} ${styles["background-style-primary"]}`}>
               <li 
                 className={`${styles["pd-top"]}`}
-                onClick={() => setSelectedSection("allTickets")}
+                onClick={() => setSelectedSection("allBrands")}
               >
-                All Tickets
+                All Brands
               </li>
               <li
-                onClick={() => setSelectedSection("myTickets")}
+                onClick={() => setSelectedSection("allNewsletters")}
               >
-                My Tickets
+                All Newsletters
               </li>
             </ul>
           )}
         </li>
         <li className={`${styles["clickable"]} ${styles["width-100"]} ${styles["text-center"]}`}>
           <b
-            onClick={() => setSection({ ...section, teams: !section.teams })}
-          >Teams</b>
+            onClick={() => setSection({ ...section, generation: !section.generation })}
+          >Generation</b>
           {
-            section.teams && (
+            section.generation && (
               <ul className={`${styles["column-container"]} ${styles["width-100"]} ${styles["content-start"]} ${styles["align-center"]} ${styles["gap-20"]} ${styles["max-width-150"]} ${styles["background-style-primary"]}`}>
                 <li
                   className={`${styles["pd-top"]}`}
-                  onClick={() => setSelectedSection("allTeams")}
+                  onClick={() => setSelectedSection("aiGeneration")}
                 >
-                  All Teams
+                  AI
                 </li>
               </ul>
             )

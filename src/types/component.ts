@@ -2,8 +2,8 @@
 
 export interface Section {
     settings: boolean;
-    tickets: boolean;
-    teams: boolean;
+    configurations: boolean;
+    generation: boolean;
     admin: boolean;
 }
 
