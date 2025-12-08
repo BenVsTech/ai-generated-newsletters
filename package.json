@@ -1,0 +1,33 @@
+{
+  "name": "ai-generated-newsletters",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "create-local-db": "tsx script/localDatabaseCreation.ts",
+    "create-test-user": "tsx script/testUserCreation.ts"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "next": "16.0.7",
+    "next-auth": "^4.24.13",
+    "nodemailer": "^7.0.11",
+    "pg": "^8.16.3",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.7",
+    "tailwindcss": "^4",
+    "tsx": "^4.21.0",
+    "typescript": "^5"
+  }
+}
