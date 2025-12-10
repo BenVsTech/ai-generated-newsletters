@@ -82,3 +82,20 @@ export interface UserComponent {
     email: string;
     createdAt: Date;
 }
+
+export interface BrandComponent {
+    id: number;
+    name: string;
+    user: {
+        id: number;
+        name: string;
+    };
+    lastUpdated: Date;
+}
+
+export interface BrandsProps {
+    setup: {
+        userId: number;
+    }
+}
+

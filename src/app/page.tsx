@@ -10,10 +10,13 @@ import { passwordForm } from "@/util/forms/password";
 import Settings from "./components/settings";
 import Form from "./components/form";
 import Users from "./components/users";
+import Brands from "./components/brands";
 
 // Exports
 
 export default function Home() {
+
+  const [userId, setUserId] = useState<number | null>(null);
   const { data: session, status } = useSession();
   const router = useRouter();
   const [content, setContent] = useState<React.ReactNode>(null);
@@ -26,6 +29,12 @@ export default function Home() {
   const [selectedSection, setSelectedSection] = useState<string>("");
 
   useEffect(() => {
+    if(session?.user?.id) {
+      setUserId(parseInt(session?.user?.id as string));
+    }
+  }, [session?.user?.id]);
+
+  useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
     }
@@ -35,7 +44,11 @@ export default function Home() {
     switch (selectedSection) {
       case "allBrands":
         setContent(
-          <div>This is the all brands section</div>
+          userId ? (
+            <Brands setup={{ userId }} />
+          ) : (
+            <div>You are not a valid user to access this section</div>
+          )
         );
         break;
       case "allNewsletters":
