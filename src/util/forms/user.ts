@@ -7,13 +7,8 @@ import { FormElements } from "@/types/component";
 export const userForm: FormElements = {
     title: 'Create User',
     description: 'This form is used to create a new user',
-    apiOptionsStatus: true,
-    apiOptions: [
-        {
-            api: '/api/teams',
-            ref: 'team',
-        },
-    ],
+    apiOptionsStatus: false,
+    apiOptions: [],
     elements: [
         {
             tag: 'input',
@@ -38,19 +33,6 @@ export const userForm: FormElements = {
             placeholder: 'e.g. "john.doe@example.com"',
             optionApiStatus: false,
             optionApiRef: null,
-            options: [],
-            required: true,
-        },
-        {
-            tag: 'select',
-            type: 'select',
-            label: 'Team',
-            instructions: 'Select the team of the user',
-            id: 'team_id',
-            name: 'team_id',
-            placeholder: '',
-            optionApiStatus: true,
-            optionApiRef: 'team',
             options: [],
             required: true,
         },

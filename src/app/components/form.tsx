@@ -16,7 +16,6 @@ export default function Form({ setup, onClose, onSubmit }: FormProps) {
     useEffect(() => {
 
         if(!setup.content.apiOptionsStatus) {
-            console.log('No API options found');
             setOptionsLoaded(true);
             return;
         }

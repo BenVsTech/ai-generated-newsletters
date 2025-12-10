@@ -21,9 +21,6 @@ export default function Table({ setup }: TableProps) {
                     {setup.headers.map((header) => (
                         <th key={header}>{header}</th>
                     ))}
-                    {setup.hasComments && (
-                        <th>Comments</th>
-                    )}
                     {setup.archiveable && (
                         <th>Archive</th>
                     )}
@@ -41,19 +38,6 @@ export default function Table({ setup }: TableProps) {
                             {row.map((cell, cellIndex) => (
                                 <td key={cellIndex}>{cell}</td>
                             ))}
-                            {setup.hasComments && (
-                                <td>
-                                    <button
-                                        className={`${styles["button-structure"]} ${styles["secondary-button"]}`}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setup.onViewComments(Number(row[0]));
-                                        }}
-                                    >
-                                        View
-                                    </button>
-                                </td>
-                            )}
                             {setup.archiveable && (
                                 <td>
                                     <button

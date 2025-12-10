@@ -9,6 +9,7 @@ import { FormData as FormDataType, Section } from "../types/component";
 import { passwordForm } from "@/util/forms/password";
 import Settings from "./components/settings";
 import Form from "./components/form";
+import Users from "./components/users";
 
 // Exports
 
@@ -42,14 +43,14 @@ export default function Home() {
           <div>This is the all newsletters section</div>
         );
         break;
-      case "aiGeneration":
+      case "generation":
         setContent(
-          <div>This is the ai generation section</div>
+          <div>This is the generation section</div>
         );
         break;
       case "userManagement":
         setContent(
-          <div>This is the user management section</div>
+          <Users />
         );
         break;
       case "updatePassword":
@@ -136,6 +137,9 @@ export default function Home() {
         <li>
           <b className={`${styles["clickable"]} ${styles["width-100"]} ${styles["text-center"]} ${selectedSection === "home" ? styles["active"] : ""}`} onClick={() => setSelectedSection("home")}>Home</b>
         </li>
+        <li>
+          <b className={`${styles["clickable"]} ${styles["width-100"]} ${styles["text-center"]} ${selectedSection === "generation" ? styles["active"] : ""}`} onClick={() => setSelectedSection("generation")}>Generation</b>
+        </li>
         <li className={`${styles["clickable"]} ${styles["width-100"]} ${styles["text-center"]}`}>
           <b
             onClick={() => setSection({ ...section, configurations: !section.configurations })}
@@ -155,23 +159,6 @@ export default function Home() {
               </li>
             </ul>
           )}
-        </li>
-        <li className={`${styles["clickable"]} ${styles["width-100"]} ${styles["text-center"]}`}>
-          <b
-            onClick={() => setSection({ ...section, generation: !section.generation })}
-          >Generation</b>
-          {
-            section.generation && (
-              <ul className={`${styles["column-container"]} ${styles["width-100"]} ${styles["content-start"]} ${styles["align-center"]} ${styles["gap-20"]} ${styles["max-width-150"]} ${styles["background-style-primary"]}`}>
-                <li
-                  className={`${styles["pd-top"]}`}
-                  onClick={() => setSelectedSection("aiGeneration")}
-                >
-                  AI
-                </li>
-              </ul>
-            )
-          }
         </li>
         <li className={`${styles["clickable"]} ${styles["width-100"]} ${styles["text-center"]}`}>
           <b

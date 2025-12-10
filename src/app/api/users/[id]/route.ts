@@ -2,7 +2,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { handleApiResponse } from "@/lib/core/helper";
-import { updateUser } from "@/lib/service/user.service";
+import { deleteUser, getUserById, updateUser } from "@/lib/service/user.service";
 
 // Exports
 
@@ -26,3 +26,36 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         return handleApiResponse(false, error instanceof Error ? error.message : 'Unknown error', null);
     }
 }
+
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }): Promise<NextResponse> {
+    try{
+        const { id } = await params;
+
+        const getUserByIdResult = await getUserById(Number(id));
+        if(!getUserByIdResult.status) {
+            return handleApiResponse(false, getUserByIdResult.message, null);
+        }
+
+        return handleApiResponse(true, getUserByIdResult.message, getUserByIdResult.data);
+    }
+    catch(error: unknown) {
+        return handleApiResponse(false, error instanceof Error ? error.message : 'Unknown error', null);
+    }
+}
+
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }): Promise<NextResponse> {
+    try{
+        const { id } = await params;
+
+        const deleteUserResult = await deleteUser(Number(id));
+        if(!deleteUserResult.status) {
+            return handleApiResponse(false, deleteUserResult.message, null);
+        }
+
+        return handleApiResponse(true, deleteUserResult.message, deleteUserResult.data);
+    }
+    catch(error: unknown) {
+        return handleApiResponse(false, error instanceof Error ? error.message : 'Unknown error', null);
+    }
+}
+
