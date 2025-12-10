@@ -25,12 +25,6 @@ export interface TableProps {
     }
 }
 
-export interface StatusDropdownProps {
-    setup: {
-        onSelect: (status: string) => void;
-    }
-}
-
 export interface FormProps {
     setup: {
         api: string | null;
@@ -96,6 +90,49 @@ export interface BrandComponent {
 export interface BrandsProps {
     setup: {
         userId: number;
+    }
+}
+
+export interface NewsletterComponent {
+    id: number;
+    name: string;
+    speaker: string;
+    brand: {
+        id: number;
+        name: string;
+    };
+    user: {
+        id: number;
+        name: string;
+    };
+    lastUpdated: Date;
+}
+
+export interface NewslettersProps {
+    setup: {
+        userId: number;
+    }
+}
+
+export interface ContentData {
+    title: string;
+    content: string;
+    image: string;
+    link: string;
+}
+
+export interface ReturnContentData {
+    name: string;
+    brand_id: number | null;
+    speaker: string;
+    content: ContentData[];
+}
+
+export interface ContentProps {
+    setup: {
+        newsletterId: number | null;
+        onClose: () => void;
+        onSubmit: (data: ReturnContentData) => void;
     }
 }
 

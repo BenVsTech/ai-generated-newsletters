@@ -27,3 +27,15 @@ export interface User {
     created_at: Date;
     updated_at: Date;
 }
+
+export interface Brand {
+    id: number;
+    name: string;
+    primary_color: string;
+    secondary_color: string;
+    text_color: string;
+    text_font: string;
+    user_id: number;
+    created_at: Date;
+    updated_at: Date;
+}

@@ -11,6 +11,7 @@ import Settings from "./components/settings";
 import Form from "./components/form";
 import Users from "./components/users";
 import Brands from "./components/brands";
+import Newsletters from "./components/newsletters";
 
 // Exports
 
@@ -53,7 +54,11 @@ export default function Home() {
         break;
       case "allNewsletters":
         setContent(
-          <div>This is the all newsletters section</div>
+          userId ? (
+            <Newsletters setup={{ userId }} />
+          ) : (
+            <div>You are not a valid user to access this section</div>
+          )
         );
         break;
       case "generation":
