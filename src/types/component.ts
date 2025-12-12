@@ -1,0 +1,138 @@
+// Exporting Types
+
+export interface Section {
+    settings: boolean;
+    configurations: boolean;
+    generation: boolean;
+    admin: boolean;
+}
+
+export interface SettingsProps {
+    setup: {
+        onClose: () => void;
+    }
+}
+
+export interface TableProps {
+    setup: {
+        headers: string[];
+        data: string[][];
+        filterBy: string;
+        clickable: boolean;
+        onClick: (id: number) => void;
+        archiveable: boolean;
+        onArchive: (id: number) => void;
+    }
+}
+
+export interface FormProps {
+    setup: {
+        api: string | null;
+        content: FormElements;
+    },
+    onClose: () => void;
+    onSubmit: (data: FormData) => void;
+}
+
+export interface OptionApi {
+    api: string;
+    ref: string;
+}
+
+export interface Option {
+    value: string;
+    label: string;
+}
+
+export interface element {
+    tag: string;
+    type: string;
+    label: string;
+    instructions: string;
+    id: string;
+    name: string;
+    placeholder: string;
+    required: boolean;
+    optionApiStatus: boolean;
+    optionApiRef: string | null;
+    options: Option[];
+}
+
+export interface FormElements {
+    title: string;
+    description: string;
+    apiOptionsStatus: boolean;
+    apiOptions: OptionApi[];
+    elements: element[];
+}
+
+export interface FormData {
+    [key: string]: string;
+}
+
+export interface UserComponent {
+    id: number;
+    name: string;
+    email: string;
+    createdAt: Date;
+}
+
+export interface BrandComponent {
+    id: number;
+    name: string;
+    user: {
+        id: number;
+        name: string;
+    };
+    lastUpdated: Date;
+}
+
+export interface BrandsProps {
+    setup: {
+        userId: number;
+    }
+}
+
+export interface NewsletterComponent {
+    id: number;
+    name: string;
+    speaker: string;
+    brand: {
+        id: number;
+        name: string;
+    };
+    user: {
+        id: number;
+        name: string;
+    };
+    lastUpdated: Date;
+}
+
+export interface NewslettersProps {
+    setup: {
+        userId: number;
+    }
+}
+
+export interface ContentData {
+    title: string;
+    content: string;
+    image: string;
+    link: string;
+}
+
+export interface ReturnContentData {
+    name: string;
+    brand_id: number | null;
+    speaker: string;
+    content: ContentData[];
+}
+
+export interface ContentProps {
+    setup: {
+        newsletterId: number | null;
+        onClose: () => void;
+        onSubmit: (data: ReturnContentData) => void;
+    }
+}
+
