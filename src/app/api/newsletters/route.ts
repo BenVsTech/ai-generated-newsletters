@@ -26,7 +26,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
         const body = await request.json();
 
-        const createNewsletterResult = await createNewsletter(body.data, body.userId);
+        const createNewsletterResult = await createNewsletter(body);
         if(!createNewsletterResult.status) {
             return handleApiResponse(false, createNewsletterResult.message, null);
         }

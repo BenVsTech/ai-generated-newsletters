@@ -39,3 +39,22 @@ export interface Brand {
     created_at: Date;
     updated_at: Date;
 }
+
+export interface Content {
+    title: string;
+    content: string;
+    image: string;
+    link: string;
+}
+
+export interface Newsletter {
+    id: number;
+    name: string;
+    speaker: string;
+    content: Content[];
+    brand_id: number;
+    user_id: number;
+    created_at: Date;
+    updated_at: Date;
+}
+

@@ -4,7 +4,7 @@ import { NewsletterComponent, ReturnContentData } from "@/types/component";
 import { DatabaseClient, connectToDatabase } from "../core/database";
 import { handleCloseDatabaseConnections } from "../core/helper";
 import { DataReturnObject } from "@/types/helper";
-import { dynamicSendData, getAllRowsFromTable, getRowById } from "../core/database/queries";
+import { deleteRowById, dynamicSendData, getAllRowsFromTable, getRowById, updateRowById } from "../core/database/queries";
 
 // Exports
 
@@ -90,7 +90,7 @@ export async function getAllNewsletters(): Promise<DataReturnObject<NewsletterCo
     }
 }
 
-export async function createNewsletter(data: ReturnContentData, userId: number): Promise<DataReturnObject<boolean>> {
+export async function createNewsletter(data: ReturnContentData): Promise<DataReturnObject<boolean>> {
 
     let dbClient: DatabaseClient | null = null;
 
@@ -107,11 +107,10 @@ export async function createNewsletter(data: ReturnContentData, userId: number):
         
         dbClient = dbConnection.data;
 
-        const keys = Object.keys(data);
-        keys.push('user_id');
+        console.log('Data:', data);
 
+        const keys = Object.keys(data);
         const values = Object.values(data);
-        values.push(userId);
 
         const createNewsletterResult = await dynamicSendData(
             dbClient, 
@@ -138,6 +137,138 @@ export async function createNewsletter(data: ReturnContentData, userId: number):
             status: false,
             data: null,
             message: error instanceof Error ? error.message : 'Unknown error while creating newsletter'
+        };
+    } finally{
+        await handleCloseDatabaseConnections(null, dbClient);
+    }
+}
+
+export async function getNewsletterById(id: number): Promise<DataReturnObject<NewsletterComponent>> {
+
+    let dbClient: DatabaseClient | null = null;
+
+    try{
+
+        const dbConnection = await connectToDatabase(false);
+        if(!dbConnection.status || !dbConnection.data) {
+            return {
+                status: false,
+                data: null,
+                message: dbConnection.message
+            };
+        }
+        
+        dbClient = dbConnection.data;
+
+        const getNewsletterByIdResult = await getRowById(dbClient, 'newsletter', id);
+        if(!getNewsletterByIdResult.status || !getNewsletterByIdResult.data) {
+            return {
+                status: false,
+                data: null,
+                message: getNewsletterByIdResult.message
+            };
+        }
+
+        return {
+            status: true,
+            data: getNewsletterByIdResult.data as NewsletterComponent,
+            message: getNewsletterByIdResult.message
+        };
+
+    } catch(error: unknown) {
+        return {
+            status: false,
+            data: null,
+            message: error instanceof Error ? error.message : 'Unknown error while getting newsletter by id'
+        };
+    } finally{
+        await handleCloseDatabaseConnections(null, dbClient);
+    }
+}
+
+export async function updateNewsletter(data: ReturnContentData, id: number): Promise<DataReturnObject<boolean>> {
+
+    let dbClient: DatabaseClient | null = null;
+
+    try{
+
+        const dbConnection = await connectToDatabase(false);
+        if(!dbConnection.status || !dbConnection.data) {
+            return {
+                status: false,
+                data: null,
+                message: dbConnection.message
+            };
+        }
+        
+        dbClient = dbConnection.data;
+
+        const keys = Object.keys(data);
+        const values = Object.values(data);
+
+        const updateNewsletterResult = await updateRowById(dbClient, 'newsletter', keys, values, id);
+        if(!updateNewsletterResult.status || !updateNewsletterResult.data) {
+            return {
+                status: false,
+                data: null,
+                message: updateNewsletterResult.message
+            };
+        }
+
+        return {
+            status: true,
+            data: true,
+            message: updateNewsletterResult.message
+        };
+        
+    } catch(error: unknown) {
+        return {
+            status: false,
+            data: null,
+            message: error instanceof Error ? error.message : 'Unknown error while updating newsletter'
+        };
+    } finally{
+        await handleCloseDatabaseConnections(null, dbClient);
+    }
+}
+
+export async function deleteNewsletter(id: number): Promise<DataReturnObject<boolean>> {
+
+    let dbClient: DatabaseClient | null = null;
+
+    try{
+
+        const dbConnection = await connectToDatabase(false);
+        if(!dbConnection.status || !dbConnection.data) {
+            return {
+                status: false,
+                data: null,
+                message: dbConnection.message
+            };
+        }
+        
+        dbClient = dbConnection.data;
+
+        const deleteNewsletterResult = await deleteRowById(dbClient, 'newsletter', id);
+        if(!deleteNewsletterResult.status || !deleteNewsletterResult.data) {
+            return {
+                status: false,
+                data: null,
+                message: deleteNewsletterResult.message
+            };
+        }
+
+        return {
+            status: true,
+            data: true,
+            message: deleteNewsletterResult.message
+        };
+
+    } catch(error: unknown) {
+        return {
+            status: false,
+            data: null,
+            message: error instanceof Error ? error.message : 'Unknown error while deleting newsletter'
         };
     } finally{
         await handleCloseDatabaseConnections(null, dbClient);

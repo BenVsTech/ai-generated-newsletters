@@ -59,18 +59,21 @@ export default function Newsletters({ setup }: NewslettersProps) {
     const handleCreateNewsletter = async (data: ReturnContentData) => {
         try{
 
-            const response = await fetch(`/api/newsletters`, {
-                method: 'POST',
+            if (!data) {
+                console.error('Data is undefined or null');
+                return;
+            }
+
+            const api = selectedNewsletterId ? `/api/newsletters/${selectedNewsletterId}` : '/api/newsletters';
+            const method = selectedNewsletterId ? 'PUT' : 'POST';
+            const body = selectedNewsletterId ? { ...data, content: JSON.stringify(data.content || []), id: selectedNewsletterId } : { ...data, content: JSON.stringify(data.content || []), user_id: setup.userId };
+
+            const response = await fetch(api, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    data: {
-                        ...data,
-                        content: JSON.stringify(data.content)
-                    },
-                    userId: setup.userId
-                }),
+                body: JSON.stringify(body),
             });
 
             if(!response.ok) {
@@ -90,6 +93,38 @@ export default function Newsletters({ setup }: NewslettersProps) {
             console.error('Failed to create newsletter');
         } finally {
             setCreateNewsletterStatus(false);
+        }
+    }
+
+    const handleArchiveNewsletter = async (id: number) => {
+        try{
+
+            const response = await fetch(`/api/newsletters/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if(!response.ok) {
+                console.error('Failed to archive newsletter');
+                return;
+            }
+
+            const responseData = await response.json();
+
+            if(responseData.status) {
+                console.log('Newsletter archived successfully');
+            } else {
+                console.error(responseData.message);
+            }
+
+        } catch(error: unknown) {
+            console.error('Failed to archive newsletter');
+            return;
+        } finally {
+            const newNewsletters = newsletters.filter((newsletter: NewsletterComponent) => newsletter.id !== id);
+            setNewsletters(newNewsletters);
         }
     }
 
@@ -149,10 +184,11 @@ export default function Newsletters({ setup }: NewslettersProps) {
                     clickable: true,
                     onClick: (id: number) => {
                         setSelectedNewsletterId(id);
+                        setCreateNewsletterStatus(true);
                     },
-                    archiveable: false,
+                    archiveable: true,
                     onArchive: (id: number) => {
-                        console.log('Archive Newsletter:', id);
+                        handleArchiveNewsletter(id);
                     },
                 }}
             />

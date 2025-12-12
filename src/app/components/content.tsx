@@ -12,6 +12,7 @@ export default function Content({ setup }: ContentProps) {
     const [contentCount, setContentCount] = useState<number>(0);
     const [brands, setBrands] = useState<Brand[]>([]);
     const [brandsLoaded, setBrandsLoaded] = useState<boolean>(false);
+    const [newsletterLoaded, setNewsletterLoaded] = useState<boolean>(true);
     const [newsletterName, setNewsletterName] = useState<string>('');
     const [newsletterBrandId, setNewsletterBrandId] = useState<number | null>(null);
     const [newsletterSpeaker, setNewsletterSpeaker] = useState<string>('');
@@ -22,10 +23,54 @@ export default function Content({ setup }: ContentProps) {
         setReturnContentData({ name: newsletterName, brand_id: newsletterBrandId, speaker: newsletterSpeaker, content: contentData });
     }, [newsletterName, newsletterBrandId, newsletterSpeaker, contentData, setup.newsletterId]);
 
-    const handleSubmitContent = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setup.onSubmit(returnContentData);
-    }
+    useEffect(() => {
+
+        if(!setup.newsletterId) {
+            return;
+        }
+
+        const getNewsletter = async function () {
+
+            setNewsletterLoaded(false);
+
+            try{
+
+                const response = await fetch(`/api/newsletters/${setup.newsletterId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if(!response.ok) {
+                    console.error('Failed to fetch newsletter');
+                    return;
+                }
+
+                const data = await response.json();
+
+                if(data.status) {
+                    setNewsletterBrandId(data.data.brand_id);
+                    setNewsletterName(data.data.name);
+                    setNewsletterSpeaker(data.data.speaker);
+                    setContentData(data.data.content);
+                    setContentCount(data.data.content.length);
+                } else {
+                    console.error(data.message);
+                }
+
+            } catch(error: unknown) {
+                console.error('Failed to fetch newsletter');
+                return;
+            } finally {
+                setNewsletterLoaded(true);
+            }
+        }
+
+        getNewsletter();
+
+    }, [setup.newsletterId]);
+
 
     useEffect(() => {
         const getBrands = async function () {
@@ -61,7 +106,12 @@ export default function Content({ setup }: ContentProps) {
 
     }, []);
 
-    if(!brandsLoaded) {
+    const handleSubmitContent = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setup.onSubmit(returnContentData);
+    }
+
+    if(!brandsLoaded || !newsletterLoaded) {
         return (
             <div className={`${styles["column-container"]} ${styles["width-100"]} ${styles["pd-all-round"]} ${styles["content-start"]} ${styles["align-start"]} ${styles["gap-10"]} ${styles["background-style-primary"]}`}>
                 Loading...
