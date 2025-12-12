@@ -12,6 +12,7 @@ import Form from "./components/form";
 import Users from "./components/users";
 import Brands from "./components/brands";
 import Newsletters from "./components/newsletters";
+import Generation from "./components/generation";
 
 // Exports
 
@@ -63,7 +64,7 @@ export default function Home() {
         break;
       case "generation":
         setContent(
-          <div>This is the generation section</div>
+          <Generation />
         );
         break;
       case "userManagement":
@@ -153,10 +154,10 @@ export default function Home() {
           <img src="/assets/logo.png" alt="Logo" className={`${styles["logo-structure"]}`} />
         </li>
         <li>
-          <b className={`${styles["clickable"]} ${styles["width-100"]} ${styles["text-center"]} ${selectedSection === "home" ? styles["active"] : ""}`} onClick={() => setSelectedSection("home")}>Home</b>
+          <b className={`${styles["clickable"]} ${styles["width-100"]} ${styles["text-center"]}`} onClick={() => setSelectedSection("home")}>Home</b>
         </li>
         <li>
-          <b className={`${styles["clickable"]} ${styles["width-100"]} ${styles["text-center"]} ${selectedSection === "generation" ? styles["active"] : ""}`} onClick={() => setSelectedSection("generation")}>Generation</b>
+          <b className={`${styles["clickable"]} ${styles["width-100"]} ${styles["text-center"]}`} onClick={() => setSelectedSection("generation")}>Generation</b>
         </li>
         <li className={`${styles["clickable"]} ${styles["width-100"]} ${styles["text-center"]}`}>
           <b
