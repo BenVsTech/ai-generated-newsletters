@@ -60,11 +60,30 @@ export default function Generation() {
         setGenerateNewsletterStatus(true);
 
         try{
-            console.log('Selected Newsletter ID:', selectedNewsletterId);
-            console.log('Generating newsletter...');
+            
+            const response = await fetch('/api/ai', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ newsletterId: selectedNewsletterId }),
+            });
+
+            if(!response.ok) {
+                console.error('Failed to generate newsletter');
+                return;
+            }
+
+            const data = await response.json();
+
+            if(data.status) {
+                console.log('Newsletter generated successfully:', data.data);
+            } else {
+                console.error('Failed to generate newsletter:', data.message);
+            }
 
         } catch(error: unknown) {
-            console.error('Failed to generate newsletter');
+            console.error('Failed to generate newsletter:', error instanceof Error ? error.message : 'Unknown error while generating newsletter');
         } finally {
             setGenerateNewsletterStatus(false);
         }
