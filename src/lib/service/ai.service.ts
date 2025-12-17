@@ -5,7 +5,7 @@ import { DataReturnObject } from "@/types/helper";
 import { handleCloseDatabaseConnections } from "../core/helper";
 import { connectToDatabase, DatabaseClient } from "../core/database";
 import { getRowById } from "../core/database/queries";
-import { Newsletter } from "@/types/database";
+import { Brand, Newsletter } from "@/types/database";
 
 // Exports
 
@@ -36,6 +36,25 @@ export async function generateNewsletter(newsletterId: number): Promise<DataRetu
         }
 
         const { name, speaker, content, brand_id } = newsletterObject.data as Newsletter;
+
+        const brandObject = await getRowById(dbClient, 'brand', brand_id);
+        if(!brandObject.status || !brandObject.data) {
+            return {
+                status: false,
+                data: null,
+                message: brandObject.message
+            };
+        }
+
+        const { primary_color, secondary_color, text_color, text_font } = brandObject.data as Brand;
+        if(!primary_color || !secondary_color || !text_color || !text_font) {
+            return {
+                status: false,
+                data: null,
+                message: 'Brand object is missing required fields'
+            };
+        }
+        
         
         const aiClient = await createAiClient();
         if(!aiClient.status || !aiClient.data) {
@@ -46,7 +65,7 @@ export async function generateNewsletter(newsletterId: number): Promise<DataRetu
             };
         }
         
-        const createAiPromptResult = await createAiPrompt(aiClient.data, name, speaker, content as any);
+        const createAiPromptResult = await createAiPrompt(aiClient.data, name, speaker, content as any, primary_color);
         if(!createAiPromptResult.status || !createAiPromptResult.data) {
             return {
                 status: false,
@@ -55,11 +74,11 @@ export async function generateNewsletter(newsletterId: number): Promise<DataRetu
             };
         }
 
-        console.log('Create Ai Prompt Result:', createAiPromptResult.data);
+        const html = createAiPromptResult.data;
 
         return {
             status: true,
-            data: 'Newsletter generated successfully',
+            data: html,
             message: 'Newsletter generated successfully'
         };
 
