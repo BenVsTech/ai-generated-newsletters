@@ -43,10 +43,20 @@ async function withRetry<T>(fn: () => Promise<T>, retries: number = 5, baseDelay
     return await fn();
   } catch (err: any) {
     const errorMessage = err.message || err.toString() || '';
-    const isRetryableError = 
+    
+    // Don't retry on overloaded errors (503, Service Unavailable, overloaded)
+    // These indicate the service needs time to recover, not immediate retries
+    const isOverloadedError = 
       errorMessage.includes("503") || 
       errorMessage.includes("Service Unavailable") ||
-      errorMessage.includes("overloaded") ||
+      errorMessage.includes("overloaded");
+    
+    if (isOverloadedError) {
+      throw err;
+    }
+    
+    // Only retry on rate limit errors (429, rate limit, quota)
+    const isRetryableError = 
       errorMessage.includes("429") ||
       errorMessage.includes("rate limit") ||
       errorMessage.includes("quota");
@@ -60,7 +70,7 @@ async function withRetry<T>(fn: () => Promise<T>, retries: number = 5, baseDelay
     const jitter = Math.random() * 1000;
     const delay = Math.min(exponentialDelay + jitter, 60000);
     
-    console.log(`AI service overloaded. Retry attempt ${attemptNumber}/${maxRetries} after ${Math.round(delay)}ms delay...`);
+    console.log(`Rate limit encountered. Retry attempt ${attemptNumber}/${maxRetries} after ${Math.round(delay)}ms delay...`);
     
     await new Promise(res => setTimeout(res, delay));
     return withRetry(fn, retries - 1, initialDelay);
