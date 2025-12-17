@@ -13,6 +13,7 @@ export default function Generation() {
     const [selectedNewsletterId, setSelectedNewsletterId] = useState<number | null>(null);
     const [generateNewsletterStatus, setGenerateNewsletterStatus] = useState<boolean>(false);
     const [generatedNewsletterHtml, setGeneratedNewsletterHtml] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     useEffect(() => {
         const getNewsletters = async function () {
@@ -54,11 +55,12 @@ export default function Generation() {
         e.preventDefault();
 
         if(!selectedNewsletterId) {
-            console.error('No newsletter selected');
+            setErrorMessage('Please select a newsletter');
             return;
         }
 
         setGenerateNewsletterStatus(true);
+        setErrorMessage(null);
 
         try{
             
@@ -70,21 +72,18 @@ export default function Generation() {
                 body: JSON.stringify({ newsletterId: selectedNewsletterId }),
             });
 
-            if(!response.ok) {
-                console.error('Failed to generate newsletter');
-                return;
-            }
-
             const data = await response.json();
 
             if(data.status) {
                 setGeneratedNewsletterHtml(data.data);
+                setErrorMessage(null);
             } else {
-                console.error('Failed to generate newsletter:', data.message);
+                setErrorMessage(data.message || 'Failed to generate newsletter');
             }
 
         } catch(error: unknown) {
-            console.error('Failed to generate newsletter:', error instanceof Error ? error.message : 'Unknown error while generating newsletter');
+            const errorMsg = error instanceof Error ? error.message : 'Unknown error while generating newsletter';
+            setErrorMessage(`Network error: ${errorMsg}`);
         } finally {
             setGenerateNewsletterStatus(false);
         }
@@ -120,6 +119,7 @@ export default function Generation() {
     const handleResetNewsletter = () => {
         setGeneratedNewsletterHtml(null);
         setSelectedNewsletterId(null);
+        setErrorMessage(null);
     }
 
     if(generatedNewsletterHtml) {
@@ -187,6 +187,22 @@ export default function Generation() {
                 <button className={`${styles["button-structure"]} ${styles["primary-button"]}`} type="submit" disabled={generateNewsletterStatus}>Generate Newsletter</button>
 
             </form>
+            {
+                errorMessage && (
+                    <div 
+                        className={`${styles["column-container"]} ${styles["width-100"]} ${styles["content-start"]} ${styles["align-start"]} ${styles["gap-10"]}`}
+                        style={{
+                            padding: '15px',
+                            backgroundColor: '#fee',
+                            border: '1px solid #fcc',
+                            borderRadius: '8px',
+                            color: '#c33'
+                        }}
+                    >
+                        <strong>Error:</strong> {errorMessage}
+                    </div>
+                )
+            }
             {
                 generateNewsletterStatus && (
                     <div className={`${styles["column-container"]} ${styles["width-100"]} ${styles["content-start"]} ${styles["align-start"]} ${styles["gap-10"]}`}>
